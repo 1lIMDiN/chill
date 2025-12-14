@@ -11,7 +11,7 @@ import (
 //	Фильтр по значению
 func main() {
 	m := map[string]int{
-		"A": 1,
+		"A": 2,
 		"B": 2,
 		"C": 3,
 		"D": 5,

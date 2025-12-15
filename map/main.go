@@ -7,44 +7,119 @@ import (
 )
 
 // ---------------------------------------------------------------------
-//
-//	Фильтр по значению
+// Инвертированная map
+
 func main() {
-	m := map[string]int{
-		"A": 2,
-		"B": 2,
-		"C": 3,
-		"D": 5,
-		"E": 1,
-		"F": 2,
+	m := map[int]string {
+		1: "a",
+		2: "b",
+		3: "a",
+		4: "d",
 	}
-	value := 5
 
-	result := mapFilter(m, value)
-
-	for k, v := range result {
-		fmt.Printf("%s: %d\n", k, v)
-	}
+	swapped := swapMap(m)
+	fmt.Println(swapped)
 }
 
-func mapFilter(m map[string]int, value int) map[string]int {
-	count := 0
-	for _, v := range m {
-		if v >= value {
-			count++
-		}
+func swapMap(swap map[int]string) map[string][]int {
+	swapped := make(map[string][]int)
+
+	for key, value := range swap {
+		swapped[value] = append(swapped[value], key)
 	}
 
-	result := make(map[string]int, count)
-
-	for k, v := range m {
-		if v >= value {
-			result[k] = v
-		}
-	}
-
-	return result
+	return swapped
 }
+  
+// ---------------------------------------------------------------------
+//
+// //	Группировка по категории
+
+// type Product struct {
+// 	ID       int
+// 	Name     string
+// 	Category string
+// 	Price    float64
+// }
+
+// func main() {
+// 	products := []Product{
+// 		{ID: 1, Name: "Ноутбук", Category: "Электроника", Price: 50000},
+// 		{ID: 2, Name: "Мышь", Category: "Электроника", Price: 1500},
+// 		{ID: 3, Name: "Стул", Category: "Мебель", Price: 8000},
+// 		{ID: 4, Name: "Стол", Category: "Мебель", Price: 12000},
+// 		{ID: 5, Name: "Наушники", Category: "Электроника", Price: 3000},
+// 		{ID: 6, Name: "Книга", Category: "Книги", Price: 500},
+// 		{ID: 7, Name: "Коврик", Category: "Мебель", Price: 2000},
+// 	}
+
+// 	grouped := groupByCategory(products)
+
+// 	print(grouped)
+// }
+
+// func groupByCategory(products []Product) map[string][]Product {
+// 	group := make(map[string][]Product) 
+
+// 	for _, product := range products {
+// 		group[product.Category] = append(group[product.Category], product)
+// 	}
+
+// 	return group
+// }
+
+// func print(group map[string][]Product) {
+// 	for category, products := range group {
+// 		fmt.Printf("Категория: %s\n", category)
+// 		fmt.Printf("Количество товара: %d\n", len(products))
+// 		fmt.Println("Товары: ")
+// 		for _, product := range products {
+// 			fmt.Printf(" -%s (ID: %d, Price: %.2f)\n",
+// 		product.Name, product.ID, product.Price)
+// 		}
+// 		fmt.Println("---")
+// 	}
+// }
+
+// ---------------------------------------------------------------------
+//
+// //	Фильтр по значению
+// func main() {
+// 	m := map[string]int{
+// 		"A": 2,
+// 		"B": 2,
+// 		"C": 3,
+// 		"D": 5,
+// 		"E": 1,
+// 		"F": 2,
+// 	}
+// 	value := 5
+
+// 	result := mapFilter(m, value)
+
+// 	for k, v := range result {
+// 		fmt.Printf("%s: %d\n", k, v)
+// 	}
+// }
+
+// func mapFilter(m map[string]int, value int) map[string]int {
+// 	count := 0
+// 	for _, v := range m {
+// 		if v >= value {
+// 			count++
+// 		}
+// 	}
+
+// 	result := make(map[string]int, count)
+
+// 	for k, v := range m {
+// 		if v >= value {
+// 			result[k] = v
+// 		}
+// 	}
+
+// 	return result
+// }
 
 //---------------------------------------------------------------------
 // // 							Объединение map

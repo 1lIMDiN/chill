@@ -4,26 +4,24 @@ import (
 	"fmt"
 )
 
-// Сравнение слайсов
+var Format = "20060102 15:04:05"
+
 func main() {
-	sl1 := []int{1,2,3,4,5}
-	sl2 := []int{1,2,3,4,5}
-	
-	fmt.Println(SlicesEqual(sl1, sl2))
-}
+	data := "20251221 04:45:21,3123"
+	storage := []string{"20230720 00:11:33,100"}
 
-func SlicesEqual(a, b []int) bool {
-	if len(a) != len(b) {
-		return false
+	num := len(Format)
+
+	if data[:num] <= storage[len(storage)-1][:num] {
+		fmt.Println("dsd")
 	}
-
-	for i := 0; i < len(a); i++ {
-		if a[i] != b[i] {
-			return false
-		}
+	fmt.Println("ok")
+	if data[:8] != storage[len(storage)-1][:8] {
+		// если наступили,
+		// то обнуляем слайс с накопленными данными
+		storage = storage[:0]
 	}
-
-	return true
+	fmt.Println(storage)
 }
 
 // // Удаление элемента по индексу
@@ -38,7 +36,7 @@ func SlicesEqual(a, b []int) bool {
 // func RemoveAtIndex(sl []int, index int) []int {
 // 	sl1 := make([]int, len(sl))
 // 	copy(sl1, sl)
-	
+
 // 	sl1 = append(sl1[:index], sl1[index+1:]...)
 
 // 	return sl1
@@ -70,8 +68,8 @@ func SlicesEqual(a, b []int) bool {
 // 		if num, exists := m[v]; num > 0 && exists {
 // 			m2[v]++
 // 		}
-// 	} 
-	
+// 	}
+
 // 	for k := range m2 {
 // 		result = append(result, k)
 // 	}

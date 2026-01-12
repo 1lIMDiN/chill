@@ -5,21 +5,59 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"time"
 )
 
 func main() {
-    resp, err := http.PostForm("http://localhost:8080/", url.Values{})
+    baseURL := "http://localhost:8080/"
+    resp, err := http.Get(baseURL+"time")
     if err != nil {
-        fmt.Println("Ошибка", err)
+        fmt.Println(err)
         return
     }
-    fmt.Println("Код статуса:", resp.StatusCode)
-    // читаем тело ответа
-    body, err := io.ReadAll(resp.Body)
-    resp.Body.Close()
+
+    print(resp)
+
+    client := &http.Client{
+        Timeout: 1 * time.Second,
+    }
+
+    req, err := http.NewRequest(http.MethodGet, baseURL, http.NoBody)
     if err != nil {
-        fmt.Println("Ошибка", err)
+        fmt.Println(err)
+        return
+    }
+
+    req.Header.Set("lang", "ru")
+
+    resp, err = client.Do(req)
+    if err != nil {
+        fmt.Println(err)
+        return
+    }
+
+    print(resp)
+
+    params := url.Values{
+        "name": {"Aleks"},
+        "email": {"2@sds.ru"},
+    }
+
+    resp, err = http.PostForm(baseURL+"name/", params)
+    if err != nil {
+        fmt.Println(err)
+        return
+    }
+    
+    print(resp)
+}
+
+func print(w *http.Response) {
+    body, err := io.ReadAll(w.Body)
+    w.Body.Close()
+    if err != nil {
+        fmt.Println(err)
         return
     }
     fmt.Println(string(body))
-} 
+}

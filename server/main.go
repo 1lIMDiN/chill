@@ -2,31 +2,64 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"net/http"
+	"time"
 )
 
 func main() {
-	http.HandleFunc("/", mainHandle)
-	err := http.ListenAndServe("localhost:8080", nil)
+	mux := http.NewServeMux()
+
+	mux.HandleFunc("/time/", timeHandle)
+	mux.HandleFunc("/name/", valuesHandle)
+	mux.HandleFunc("/", mainHandle)
+
+	err := http.ListenAndServe("localhost:8080", mux)
 	if err != nil {
 		panic(err)
 	}
 }
 
-const pattern = `<!DOCTYPE html>
-  <html lang="ru"><head>
-  <meta charset="utf-8" />
-  <title>Тестовый сервер</title>
-  </head>
-<body>%s</body></html>`
-
-func mainHandle(w http.ResponseWriter, req *http.Request) {
-    // устанавливаем заголовок Content-Type
-    w.Header().Set("Content-Type", "text/html; charset=utf-8")
-    if req.Method != http.MethodGet {
-        w.WriteHeader(http.StatusMethodNotAllowed)
-        fmt.Fprintf(w, pattern, "Сервер поддерживает только GET-запросы")
+func timeHandle(w http.ResponseWriter, r *http.Request) {
+    if r.Method != http.MethodGet {
+		http.Error(w, "method must be GET", http.StatusBadRequest)
         return
-    }
-    fmt.Fprintf(w, pattern, "Получен GET-запрос")
-} 
+	}
+	now := time.Now()
+	today := now.Format("20060102 15:04:05")
+
+	io.WriteString(w, today)
+}
+
+func valuesHandle(w http.ResponseWriter, r *http.Request) {
+	name := r.PostFormValue("name")
+    email := r.PostFormValue("email")
+
+	if len(name) == 0 || len(email) == 0 {
+		http.Error(w, "provide name and email", http.StatusBadRequest)
+        return
+	}
+	
+    // Полезная работа с данными
+    // ...
+    fmt.Fprintf(w, "Данные успешно получены: %s - %s", name, email)
+}
+
+func mainHandle(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "method must be GET", http.StatusBadRequest)
+        return
+	}
+
+	var out string
+
+	if r.Header.Get("lang") == "ru" {
+		out = fmt.Sprintf("Хост: %s\nМетод: %s\nURL: %s\n",
+			r.Host, r.Method, r.URL.Path)
+	} else {
+		out = fmt.Sprintf("Host: %s\nMethod: %s\nURL: %s\n",
+			r.Host, r.Method, r.URL.Path)
+	}
+
+	io.WriteString(w, out)
+}
